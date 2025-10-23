@@ -4,8 +4,10 @@ from pdf2image import convert_from_path
 from nltk.corpus import stopwords
 from collections import Counter
 import google.generativeai as genai
+from dotenv import load_dotenv
 
 # CONFIG ----------------------------------------------------------------------
+load_dotenv()
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 # -----------------------------------------------------------------------------
 
@@ -73,7 +75,9 @@ def main():
         is_scientific = detect_scientific(text)
         compliant = len(paragraphs) > 4 and word_count > 2000
 
-        summary = summarize_with_gemini(text) if is_scientific else "Not a valid document."
+        summary = (
+            summarize_with_gemini(text) if is_scientific else "Not a valid document."
+        )
 
         result = {
             "file": os.path.relpath(file_path),
@@ -87,7 +91,9 @@ def main():
 
         all_results.append(result)
 
-        safe_name = re.sub(r"[^\w\-_.]", "_", os.path.splitext(os.path.basename(file_path))[0])
+        safe_name = re.sub(
+            r"[^\w\-_.]", "_", os.path.splitext(os.path.basename(file_path))[0]
+        )
         out_file = os.path.join("outputs", f"result_{safe_name}.json")
         with open(out_file, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=4, ensure_ascii=False)
