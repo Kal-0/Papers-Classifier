@@ -77,5 +77,5 @@ def main():
     print(json.dumps(result, indent=2))
 
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     main()
